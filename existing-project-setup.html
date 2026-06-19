@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="Generate complete uv, Python, Jupyter, VS Code, and Git commands for new and existing data science repositories."
+  />
+  <title>Existing Data Science Repository Setup</title>
+
+  <style>
+    :root {
+      --bg: #020617;
+      --panel: #0f172a;
+      --panel-2: #111827;
+      --panel-3: #1f2937;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --border: #334155;
+      --accent: #38bdf8;
+      --green: #22c55e;
+      --warning: #f59e0b;
+      --danger: #f97316;
+      --purple: #a78bfa;
+      --code: #030712;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.14), transparent 28%),
+        radial-gradient(circle at top right, rgba(167, 139, 250, 0.12), transparent 25%),
+        linear-gradient(135deg, #020617, #0f172a);
+    }
+
+    .container {
+      width: min(1220px, 94%);
+      margin: 0 auto;
+      padding: 26px 0 50px;
+    }
+
+    .top-nav {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .home-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text);
+      text-decoration: none;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 10px 15px;
+      font-weight: 800;
+    }
+
+    .home-link:hover {
+      border-color: var(--accent);
+    }
+
+    .page-label {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    header {
+      padding: 26px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: rgba(15, 23, 42, 0.88);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.35);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.08;
+    }
+
+    .subtitle {
+      margin: 0;
+      max-width: 950px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .notice {
+      margin-top: 16px;
+      padding: 12px 14px;
+      border-left: 4px solid var(--accent);
+      border-radius: 10px;
+      background: rgba(56, 189, 248, 0.09);
+      color: #bae6fd;
+      line-height: 1.6;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 390px minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 940px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(17, 24, 39, 0.93);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.32);
+      overflow: hidden;
+    }
+
+    .form-card {
+      padding: 20px;
+      position: sticky;
+      top: 14px;
+    }
+
+    @media (max-width: 940px) {
+      .form-card {
+        position: static;
+      }
+    }
+
+    label {
+      display: block;
+      margin: 15px 0 7px;
+      font-weight: 800;
+    }
+
+    label:first-child {
+      margin-top: 0;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 12px 13px;
+      color: var(--text);
+      background: var(--code);
+      font-size: 15px;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 95px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.17);
+    }
+
+    .hint {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .scenario-help {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border: 1px solid rgba(167, 139, 250, 0.25);
+      border-radius: 11px;
+      background: rgba(167, 139, 250, 0.09);
+      color: #ddd6fe;
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-top: 15px;
+    }
+
+    .checkbox-row input {
+      width: auto;
+      margin: 0;
+    }
+
+    .checkbox-row label {
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.7);
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-weight: 800;
+      cursor: pointer;
+      color: #020617;
+      background: var(--accent);
+      transition: transform 0.12s ease, opacity 0.12s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      opacity: 0.92;
+    }
+
+    button.secondary {
+      background: var(--green);
+    }
+
+    button.warning {
+      background: var(--warning);
+    }
+
+    .status {
+      min-height: 20px;
+      margin-left: auto;
+      color: #86efac;
+      font-size: 14px;
+    }
+
+    pre {
+      margin: 0;
+      min-height: 720px;
+      max-height: 84vh;
+      padding: 20px;
+      overflow: auto;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      background: var(--code);
+      color: #d1fae5;
+      line-height: 1.55;
+    }
+
+    code {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 14px;
+    }
+
+    .guide {
+      margin-top: 22px;
+    }
+
+    .guide h2 {
+      margin: 0 0 13px;
+      font-size: 25px;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .steps {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .step {
+      padding: 17px;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: rgba(17, 24, 39, 0.9);
+      line-height: 1.6;
+    }
+
+    .step h3 {
+      margin: 0 0 8px;
+    }
+
+    .step p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    kbd {
+      display: inline-block;
+      min-width: 27px;
+      padding: 4px 7px;
+      border: 1px solid #475569;
+      border-radius: 7px;
+      background: var(--code);
+      color: #f8fafc;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .troubleshooting {
+      margin-top: 20px;
+      padding: 19px;
+      border: 1px solid rgba(249, 115, 22, 0.35);
+      border-radius: 16px;
+      background: rgba(249, 115, 22, 0.08);
+    }
+
+    .troubleshooting h2 {
+      margin-top: 0;
+    }
+
+    .path-good {
+      color: #86efac;
+      overflow-wrap: anywhere;
+    }
+
+    .path-bad {
+      color: #fdba74;
+      overflow-wrap: anywhere;
+    }
+
+    .footer-note {
+      margin-top: 22px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <nav class="top-nav">
+      <a class="home-link" href="index.html">← Back to Toolkit Home</a>
+      <span class="page-label">GitHub Pages-ready relative navigation</span>
+    </nav>
+
+    <header>
+      <h1>Data Science Repository Setup Generator</h1>
+      <p class="subtitle">
+        Generate a complete Windows setup for a brand-new project, an existing repository with
+        <code>requirements.txt</code>, or an existing notebook repository without dependency files.
+        The commands use Python, uv, Jupyter, VS Code, Git Bash or PowerShell, and a project-local
+        <code>.venv</code>.
+      </p>
+
+      <div class="notice">
+        The notebook kernel and VS Code interpreter must point to the project environment:
+        <strong>.venv\Scripts\python.exe</strong>. Do not select the global Python installation under
+        <strong>AppData\Local\Programs\Python</strong>.
+      </div>
+    </header>
+
+    <section class="grid">
+      <aside class="card form-card">
+        <label for="scenario">Project scenario</label>
+        <select id="scenario">
+          <option value="fresh">Start from an empty folder</option>
+          <option value="requirements">Existing repository with requirements.txt</option>
+          <option value="notebooks">Existing repository without requirements.txt</option>
+        </select>
+        <div id="scenarioHelp" class="scenario-help"></div>
+
+        <label for="shell">Terminal</label>
+        <select id="shell">
+          <option value="gitbash" selected>Git Bash / MINGW64</option>
+          <option value="powershell">PowerShell</option>
+        </select>
+
+        <label for="basePath">Base folder</label>
+        <input id="basePath" value="/e/Data Science" />
+        <div id="baseHint" class="hint">Git Bash example: /e/Data Science</div>
+
+        <label for="projectName">Project/repository folder name</label>
+        <input id="projectName" value="complete-python-bootcamp" />
+
+        <label for="cloneUrl">GitHub clone URL (optional)</label>
+        <input id="cloneUrl" placeholder="https://github.com/USERNAME/REPOSITORY.git" />
+        <div class="hint">For an already-cloned local repository, leave this empty.</div>
+
+        <label for="pythonVersion">Python version</label>
+        <input id="pythonVersion" value="3.12" />
+
+        <label for="requirementsFile">Requirements filename</label>
+        <input id="requirementsFile" value="requirements.txt" />
+
+        <label for="kernelDisplay">Jupyter kernel display name</label>
+        <input id="kernelDisplay" value="Python 3.12 - Data Science Project" />
+
+        <label for="dataPackages">Default data science packages</label>
+        <textarea id="dataPackages">numpy pandas matplotlib seaborn scipy scikit-learn openpyxl pyarrow plotly</textarea>
+
+        <label for="devPackages">Development packages</label>
+        <textarea id="devPackages">ruff black pytest</textarea>
+
+        <div class="checkbox-row">
+          <input id="includeGit" type="checkbox" checked />
+          <label for="includeGit">Include Git initialization and .gitignore commands</label>
+        </div>
+
+        <div class="checkbox-row">
+          <input id="registerKernel" type="checkbox" checked />
+          <label for="registerKernel">Register a named Jupyter kernel</label>
+        </div>
+      </aside>
+
+      <section class="card">
+        <div class="toolbar">
+          <button id="copyBtn">Copy commands</button>
+          <button id="downloadBtn" class="secondary">Download script</button>
+          <button id="resetBtn" class="warning">Reset defaults</button>
+          <span id="status" class="status"></span>
+        </div>
+
+        <pre><code id="output"></code></pre>
+      </section>
+    </section>
+
+    <section class="guide">
+      <h2>VS Code interpreter and Jupyter server selection</h2>
+
+      <div class="steps">
+        <article class="step">
+          <h3>1. Select the Python interpreter</h3>
+          <p>
+            Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd>, run
+            <strong>Python: Select Interpreter</strong>, then choose
+            <strong>.venv\Scripts\python.exe</strong>.
+          </p>
+        </article>
+
+        <article class="step">
+          <h3>2. Select the Jupyter server interpreter</h3>
+          <p>
+            Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd>. If your VS Code Jupyter
+            extension shows <strong>Jupyter: Select Interpreter to Start Jupyter Server</strong>,
+            choose the same <strong>.venv\Scripts\python.exe</strong>.
+          </p>
+        </article>
+
+        <article class="step">
+          <h3>3. Select the notebook kernel</h3>
+          <p>
+            Open the <strong>.ipynb</strong> file, click <strong>Select Kernel</strong>, and choose
+            the generated kernel name or the Python environment under <strong>.venv</strong>.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="troubleshooting">
+      <h2>Fix the “requires the ipykernel package” message</h2>
+      <p>
+        First verify that ipykernel is installed in the project environment:
+      </p>
+      <p><code>uv run python -c "import sys, ipykernel; print(sys.executable); print(ipykernel.__version__)"</code></p>
+      <p>
+        Correct path:
+        <span class="path-good">...\YOUR-REPOSITORY\.venv\Scripts\python.exe</span>
+      </p>
+      <p>
+        Wrong/global path:
+        <span class="path-bad">C:\Users\...\AppData\Local\Programs\Python\Python312\python.exe</span>
+      </p>
+      <p>
+        If the project-local import succeeds, do not reinstall ipykernel globally. Change the
+        notebook kernel and VS Code interpreter to the project’s <code>.venv</code>.
+      </p>
+    </section>
+
+    <p class="footer-note">
+      The generated commands safely skip <code>uv init --bare</code> when an existing
+      <code>pyproject.toml</code> is already present. The <code>.venv</code> directory is excluded
+      from Git and can be recreated with <code>uv sync</code>.
+    </p>
+  </main>
+
+  <script>
+    const defaults = {
+      scenario: "fresh",
+      shell: "gitbash",
+      gitBashBase: "/e/Data Science",
+      powerShellBase: "E:\\Data Science",
+      projectName: "complete-python-bootcamp",
+      cloneUrl: "",
+      pythonVersion: "3.12",
+      requirementsFile: "requirements.txt",
+      kernelDisplay: "Python 3.12 - Data Science Project",
+      dataPackages: "numpy pandas matplotlib seaborn scipy scikit-learn openpyxl pyarrow plotly",
+      devPackages: "ruff black pytest",
+      includeGit: true,
+      registerKernel: true
+    };
+
+    const els = {
+      scenario: document.getElementById("scenario"),
+      scenarioHelp: document.getElementById("scenarioHelp"),
+      shell: document.getElementById("shell"),
+      basePath: document.getElementById("basePath"),
+      baseHint: document.getElementById("baseHint"),
+      projectName: document.getElementById("projectName"),
+      cloneUrl: document.getElementById("cloneUrl"),
+      pythonVersion: document.getElementById("pythonVersion"),
+      requirementsFile: document.getElementById("requirementsFile"),
+      kernelDisplay: document.getElementById("kernelDisplay"),
+      dataPackages: document.getElementById("dataPackages"),
+      devPackages: document.getElementById("devPackages"),
+      includeGit: document.getElementById("includeGit"),
+      registerKernel: document.getElementById("registerKernel"),
+      output: document.getElementById("output"),
+      copyBtn: document.getElementById("copyBtn"),
+      downloadBtn: document.getElementById("downloadBtn"),
+      resetBtn: document.getElementById("resetBtn"),
+      status: document.getElementById("status")
+    };
+
+    function slugify(value) {
+      return value
+        .trim()
+        .toLowerCase()
+        .replace(/['"]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "") || "data-science-project";
+    }
+
+    function normalizePackages(value) {
+      return value
+        .split(/\s+/)
+        .map((item) => item.trim())
+        .filter(Boolean)
+        .join(" ");
+    }
+
+    function quoteBash(value) {
+      return `"${String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
+    }
+
+    function quotePowerShell(value) {
+      return `"${String(value).replace(/`/g, "``").replace(/"/g, '`"')}"`;
+    }
+
+    function projectPath(config) {
+      if (config.shell === "gitbash") {
+        return `${config.basePath.replace(/\/+$/, "")}/${config.projectName}`;
+      }
+      return `${config.basePath.replace(/[\\/]+$/, "")}\\${config.projectName}`;
+    }
+
+    function cloneOrEnterGitBash(config) {
+      if (config.scenario === "fresh") {
+        return `cd ${quoteBash(config.basePath)}
+
+uv python install ${config.pythonVersion}
+
+uv init ${config.projectName} --app --python ${config.pythonVersion}
+
+cd ${quoteBash(projectPath(config))}`;
+      }
+
+      if (config.cloneUrl) {
+        return `cd ${quoteBash(config.basePath)}
+
+git clone ${quoteBash(config.cloneUrl)}
+
+cd ${quoteBash(projectPath(config))}`;
+      }
+
+      return `cd ${quoteBash(projectPath(config))}`;
+    }
+
+    function cloneOrEnterPowerShell(config) {
+      if (config.scenario === "fresh") {
+        return `cd ${quotePowerShell(config.basePath)}
+
+uv python install ${config.pythonVersion}
+
+uv init ${config.projectName} --app --python ${config.pythonVersion}
+
+cd ${quotePowerShell(projectPath(config))}`;
+      }
+
+      if (config.cloneUrl) {
+        return `cd ${quotePowerShell(config.basePath)}
+
+git clone ${quotePowerShell(config.cloneUrl)}
+
+cd ${quotePowerShell(projectPath(config))}`;
+      }
+
+      return `cd ${quotePowerShell(projectPath(config))}`;
+    }
+
+    function gitBashGitCommands(config) {
+      if (!config.includeGit) return "";
+
+      if (config.scenario === "fresh") {
+        return `
+# Initialize Git and create a safe .gitignore.
+git init
+git branch -M main
+
+touch .gitignore
+grep -qxF '.venv/' .gitignore || echo '.venv/' >> .gitignore
+grep -qxF '.ipynb_checkpoints/' .gitignore || echo '.ipynb_checkpoints/' >> .gitignore
+grep -qxF '__pycache__/' .gitignore || echo '__pycache__/' >> .gitignore
+grep -qxF '*.pyc' .gitignore || echo '*.pyc' >> .gitignore
+grep -qxF '.env' .gitignore || echo '.env' >> .gitignore
+
+git add .
+git commit -m "Initialize Python data science project"
+`;
+      }
+
+      return `
+# Update .gitignore without reinitializing the existing repository.
+touch .gitignore
+grep -qxF '.venv/' .gitignore || echo '.venv/' >> .gitignore
+grep -qxF '.ipynb_checkpoints/' .gitignore || echo '.ipynb_checkpoints/' >> .gitignore
+grep -qxF '__pycache__/' .gitignore || echo '__pycache__/' >> .gitignore
+grep -qxF '*.pyc' .gitignore || echo '*.pyc' >> .gitignore
+grep -qxF '.env' .gitignore || echo '.env' >> .gitignore
+`;
+    }
+
+    function powerShellGitCommands(config) {
+      if (!config.includeGit) return "";
+
+      const common = `
+if (-not (Test-Path .gitignore)) { New-Item .gitignore | Out-Null }
+
+$gitIgnoreEntries = @(
+  ".venv/",
+  ".ipynb_checkpoints/",
+  "__pycache__/",
+  "*.pyc",
+  ".env"
+)
+
+foreach ($entry in $gitIgnoreEntries) {
+  if (-not (Select-String -Path .gitignore -SimpleMatch $entry -Quiet -ErrorAction SilentlyContinue)) {
+    Add-Content .gitignore $entry
+  }
+}
+`;
+
+      if (config.scenario === "fresh") {
+        return `
+# Initialize Git and create a safe .gitignore.
+git init
+git branch -M main
+${common}
+git add .
+git commit -m "Initialize Python data science project"
+`;
+      }
+
+      return `
+# Update .gitignore without reinitializing the existing repository.
+${common}`;
+    }
+
+    function kernelGitBash(config) {
+      if (!config.registerKernel) return "";
+
+      return `
+# Register a friendly notebook kernel name.
+uv run python -m ipykernel install \\
+  --user \\
+  --name ${config.slug} \\
+  --display-name ${quoteBash(config.kernelDisplay)}
+`;
+    }
+
+    function kernelPowerShell(config) {
+      if (!config.registerKernel) return "";
+
+      return `
+# Register a friendly notebook kernel name.
+uv run python -m ipykernel install --user --name ${config.slug} --display-name ${quotePowerShell(config.kernelDisplay)}
+`;
+    }
+
+    function dependencyCommandsGitBash(config) {
+      if (config.scenario === "fresh") {
+        return `# Add Jupyter support.
+uv add ipykernel jupyter jupyterlab notebook nbformat nbconvert
+
+# Add common data science packages.
+uv add ${config.dataPackages}
+
+# Add development tools.
+uv add --dev ${config.devPackages}`;
+      }
+
+      if (config.scenario === "requirements") {
+        return `# Create pyproject.toml only when the existing repository does not already have one.
+if [ ! -f pyproject.toml ]; then
+  uv init --bare
+fi
+
+# Import existing requirements into the uv project.
+uv add -r ${quoteBash(config.requirementsFile)}
+
+# Ensure notebook support is present.
+uv add ipykernel jupyter`;
+      }
+
+      return `# Create pyproject.toml only when the existing repository does not already have one.
+if [ ! -f pyproject.toml ]; then
+  uv init --bare
+fi
+
+# Add notebook and common data science dependencies.
+uv add ipykernel jupyter jupyterlab notebook nbformat nbconvert
+uv add ${config.dataPackages}
+
+# Add development tools.
+uv add --dev ${config.devPackages}`;
+    }
+
+    function dependencyCommandsPowerShell(config) {
+      if (config.scenario === "fresh") {
+        return `# Add Jupyter support.
+uv add ipykernel jupyter jupyterlab notebook nbformat nbconvert
+
+# Add common data science packages.
+uv add ${config.dataPackages}
+
+# Add development tools.
+uv add --dev ${config.devPackages}`;
+      }
+
+      if (config.scenario === "requirements") {
+        return `# Create pyproject.toml only when the existing repository does not already have one.
+if (-not (Test-Path pyproject.toml)) {
+  uv init --bare
+}
+
+# Import existing requirements into the uv project.
+uv add -r ${quotePowerShell(config.requirementsFile)}
+
+# Ensure notebook support is present.
+uv add ipykernel jupyter`;
+      }
+
+      return `# Create pyproject.toml only when the existing repository does not already have one.
+if (-not (Test-Path pyproject.toml)) {
+  uv init --bare
+}
+
+# Add notebook and common data science dependencies.
+uv add ipykernel jupyter jupyterlab notebook nbformat nbconvert
+uv add ${config.dataPackages}
+
+# Add development tools.
+uv add --dev ${config.devPackages}`;
+    }
+
+    function generateGitBash(config) {
+      return `# ============================================================
+# ${config.scenarioLabel}
+# Windows + Git Bash + uv + Python ${config.pythonVersion} + Jupyter
+# ============================================================
+
+${cloneOrEnterGitBash(config)}
+
+# Avoid Windows hardlink warnings for this terminal session.
+export UV_LINK_MODE=copy
+
+# Install and pin the project Python version.
+uv python install ${config.pythonVersion}
+uv python pin ${config.pythonVersion}
+
+${dependencyCommandsGitBash(config)}
+
+# Resolve dependencies, create/update uv.lock, and synchronize .venv.
+uv sync
+
+# Verify that VS Code must use this project-local Python.
+uv run python -c "import sys, ipykernel; print('Python:', sys.executable); print('ipykernel:', ipykernel.__version__)"
+
+# Verify core packages when available.
+uv run python -c "import jupyter_client; print('jupyter_client:', jupyter_client.__version__)"
+
+${kernelGitBash(config)}
+# List available notebook kernels.
+uv run jupyter kernelspec list
+
+${gitBashGitCommands(config)}
+# Open the repository in VS Code.
+code .
+
+# ------------------------------------------------------------
+# VS Code steps
+# ------------------------------------------------------------
+# 1. Ctrl + Shift + P
+# 2. Python: Select Interpreter
+# 3. Select .venv/Scripts/python.exe
+#
+# 4. Ctrl + Shift + P
+# 5. If available, choose:
+#    Jupyter: Select Interpreter to Start Jupyter Server
+# 6. Select the same .venv/Scripts/python.exe
+#
+# 7. Open a .ipynb notebook
+# 8. Select Kernel
+# 9. Choose ${config.kernelDisplay}
+#    or Python Environments -> .venv/Scripts/python.exe
+#
+# 10. Run this verification cell:
+#     import sys, ipykernel
+#     print(sys.executable)
+#     print(ipykernel.__version__)
+`;
+    }
+
+    function generatePowerShell(config) {
+      return `# ============================================================
+# ${config.scenarioLabel}
+# Windows + PowerShell + uv + Python ${config.pythonVersion} + Jupyter
+# ============================================================
+
+${cloneOrEnterPowerShell(config)}
+
+# Avoid Windows hardlink warnings for this terminal session.
+$env:UV_LINK_MODE = "copy"
+
+# Install and pin the project Python version.
+uv python install ${config.pythonVersion}
+uv python pin ${config.pythonVersion}
+
+${dependencyCommandsPowerShell(config)}
+
+# Resolve dependencies, create/update uv.lock, and synchronize .venv.
+uv sync
+
+# Verify that VS Code must use this project-local Python.
+uv run python -c "import sys, ipykernel; print('Python:', sys.executable); print('ipykernel:', ipykernel.__version__)"
+
+# Verify Jupyter client.
+uv run python -c "import jupyter_client; print('jupyter_client:', jupyter_client.__version__)"
+
+${kernelPowerShell(config)}
+# List available notebook kernels.
+uv run jupyter kernelspec list
+
+${powerShellGitCommands(config)}
+# Open the repository in VS Code.
+code .
+
+# ------------------------------------------------------------
+# VS Code steps
+# ------------------------------------------------------------
+# 1. Ctrl + Shift + P
+# 2. Python: Select Interpreter
+# 3. Select .venv\\Scripts\\python.exe
+#
+# 4. Ctrl + Shift + P
+# 5. If available, choose:
+#    Jupyter: Select Interpreter to Start Jupyter Server
+# 6. Select the same .venv\\Scripts\\python.exe
+#
+# 7. Open a .ipynb notebook
+# 8. Select Kernel
+# 9. Choose ${config.kernelDisplay}
+#    or Python Environments -> .venv\\Scripts\\python.exe
+#
+# 10. Run this verification cell:
+#     import sys, ipykernel
+#     print(sys.executable)
+#     print(ipykernel.__version__)
+`;
+    }
+
+    function getConfig() {
+      const scenarioLabels = {
+        fresh: "Start from an empty folder",
+        requirements: "Existing repository with requirements.txt",
+        notebooks: "Existing repository without requirements.txt"
+      };
+
+      return {
+        scenario: els.scenario.value,
+        scenarioLabel: scenarioLabels[els.scenario.value],
+        shell: els.shell.value,
+        basePath: els.basePath.value.trim(),
+        projectName: slugify(els.projectName.value),
+        cloneUrl: els.cloneUrl.value.trim(),
+        pythonVersion: els.pythonVersion.value.trim() || defaults.pythonVersion,
+        requirementsFile: els.requirementsFile.value.trim() || defaults.requirementsFile,
+        kernelDisplay: els.kernelDisplay.value.trim() || defaults.kernelDisplay,
+        dataPackages: normalizePackages(els.dataPackages.value),
+        devPackages: normalizePackages(els.devPackages.value),
+        includeGit: els.includeGit.checked,
+        registerKernel: els.registerKernel.checked,
+        slug: slugify(els.projectName.value)
+      };
+    }
+
+    function updateScenarioHelp() {
+      const messages = {
+        fresh:
+          "Creates a new uv application project, pyproject.toml, README.md, .python-version, .venv, uv.lock, dependencies, Git files, and a named Jupyter kernel.",
+        requirements:
+          "Uses the existing repository, creates pyproject.toml only when missing, imports requirements.txt with uv add -r, ensures ipykernel/Jupyter are installed, and synchronizes .venv.",
+        notebooks:
+          "Uses the existing notebook repository, creates pyproject.toml only when missing, adds Jupyter and common data science packages, and synchronizes .venv."
+      };
+
+      els.scenarioHelp.textContent = messages[els.scenario.value];
+      els.requirementsFile.disabled = els.scenario.value !== "requirements";
+    }
+
+    function updateOutput() {
+      updateScenarioHelp();
+      const config = getConfig();
+      els.output.textContent =
+        config.shell === "gitbash"
+          ? generateGitBash(config)
+          : generatePowerShell(config);
+    }
+
+    function switchShell() {
+      els.basePath.value =
+        els.shell.value === "gitbash"
+          ? defaults.gitBashBase
+          : defaults.powerShellBase;
+
+      els.baseHint.textContent =
+        els.shell.value === "gitbash"
+          ? "Git Bash example: /e/Data Science"
+          : "PowerShell example: E:\\Data Science";
+
+      updateOutput();
+    }
+
+    async function copyOutput() {
+      await navigator.clipboard.writeText(els.output.textContent);
+      showStatus("Commands copied.");
+    }
+
+    function downloadScript() {
+      const config = getConfig();
+      const extension = config.shell === "gitbash" ? "sh" : "ps1";
+      const filename = `setup-${config.slug}-${config.scenario}.${extension}`;
+      const blob = new Blob([els.output.textContent], {
+        type: "text/plain;charset=utf-8"
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+
+      showStatus(`Downloaded ${filename}.`);
+    }
+
+    function resetDefaults() {
+      els.scenario.value = defaults.scenario;
+      els.shell.value = defaults.shell;
+      els.basePath.value = defaults.gitBashBase;
+      els.projectName.value = defaults.projectName;
+      els.cloneUrl.value = defaults.cloneUrl;
+      els.pythonVersion.value = defaults.pythonVersion;
+      els.requirementsFile.value = defaults.requirementsFile;
+      els.kernelDisplay.value = defaults.kernelDisplay;
+      els.dataPackages.value = defaults.dataPackages;
+      els.devPackages.value = defaults.devPackages;
+      els.includeGit.checked = defaults.includeGit;
+      els.registerKernel.checked = defaults.registerKernel;
+      els.baseHint.textContent = "Git Bash example: /e/Data Science";
+      updateOutput();
+      showStatus("Defaults restored.");
+    }
+
+    function showStatus(message) {
+      els.status.textContent = message;
+      clearTimeout(showStatus.timer);
+      showStatus.timer = setTimeout(() => {
+        els.status.textContent = "";
+      }, 2500);
+    }
+
+    [
+      els.scenario,
+      els.basePath,
+      els.projectName,
+      els.cloneUrl,
+      els.pythonVersion,
+      els.requirementsFile,
+      els.kernelDisplay,
+      els.dataPackages,
+      els.devPackages,
+      els.includeGit,
+      els.registerKernel
+    ].forEach((element) => {
+      element.addEventListener("input", updateOutput);
+      element.addEventListener("change", updateOutput);
+    });
+
+    els.shell.addEventListener("change", switchShell);
+    els.copyBtn.addEventListener("click", copyOutput);
+    els.downloadBtn.addEventListener("click", downloadScript);
+    els.resetBtn.addEventListener("click", resetDefaults);
+
+    updateOutput();
+  </script>
+</body>
+</html>
